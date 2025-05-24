@@ -84,9 +84,11 @@ app.delete('/api/notes/:id' , async (req,res,next) => {
 
 
 const init = async () => {
+
 	//2 Make a Connection
 	await client.connect();
 	console.log("Success! Connected to db!");
+	
 
 	//3 Define the Table
 	let SQL = `
@@ -99,6 +101,9 @@ const init = async () => {
 		txt VARCHAR(255) NOT NULL
 	);
   `;
+
+
+	//4 Send the SQL
 	await client.query(SQL);
 	console.log("Success! Table created!");
 
@@ -111,8 +116,6 @@ const init = async () => {
 	console.log("Success! Data seeded!");
 
 
-
-	//4 Send the SQL
 	//1 Define a PORT & Listen
 	const PORT = 3000;
 	app.listen(PORT, () => {
