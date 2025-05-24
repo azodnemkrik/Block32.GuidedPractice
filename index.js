@@ -68,13 +68,14 @@ app.put('/api/notes/:id' , async (req,res,next) => {
 })
 
 // DELETE:
-app.delete('/api/notes:id' , async (req,res,next) => {
+app.delete('/api/notes/:id' , async (req,res,next) => {
+	console.log("DELETE:", req.params.id)
 	try {
 		const SQL =`
 			DELETE FROM notes
-			WHERE id=$1;
+			WHERE id=$1
 		`
-		const response = await client.query(SQL, req.params.id)
+		const response = await client.query(SQL, [req.params.id])
 		res.sendStatus(204)
 	} catch (error) {
 		next(error)
