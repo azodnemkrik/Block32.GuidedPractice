@@ -69,7 +69,6 @@ app.put('/api/notes/:id' , async (req,res,next) => {
 
 // DELETE:
 app.delete('/api/notes/:id' , async (req,res,next) => {
-	console.log("DELETE:", req.params.id)
 	try {
 		const SQL =`
 			DELETE FROM notes
