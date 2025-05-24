@@ -36,16 +36,32 @@ app.get('/api/notes' , async (req,res,next) => {
 	}
 })
 
-// UPDATE:
-app.put('/api/notes/:id' , async (req,res,next) => {
+app.get('/api/notes/:id' , async (req,res,next) => {
 	try {
 		const SQL =`
 			SELECT *
 			FROM notes
-			ORDER BY created_at DESC;
+			WHERE id = $1
 		`
-		const response = await client.query(SQL)
+		const response = await client.query(SQL , [req.params.id])
+		console.log("!!-", response.rows)
 		res.send(response.rows)
+	} catch (error) {
+		next(error)
+	}
+})
+
+// UPDATE:
+app.put('/api/notes/:id' , async (req,res,next) => {
+	try {
+		const SQL =`
+			UPDATE notes
+			SET txt=$1, ranking=$2, updated_at=now()
+			WHERE id=$3
+			RETURNING *;
+		`
+		const response = await client.query(SQL , [req.body.txt, req.body.ranking, req.params.id])
+		res.send(response.rows[0])
 	} catch (error) {
 		next(error)
 	}
@@ -55,12 +71,11 @@ app.put('/api/notes/:id' , async (req,res,next) => {
 app.delete('/api/notes:id' , async (req,res,next) => {
 	try {
 		const SQL =`
-			SELECT *
-			FROM notes
-			ORDER BY created_at DESC;
+			DELETE FROM notes
+			WHERE id=$1;
 		`
-		const response = await client.query(SQL)
-		res.send(response.rows)
+		const response = await client.query(SQL, req.params.id)
+		res.sendStatus(204)
 	} catch (error) {
 		next(error)
 	}
